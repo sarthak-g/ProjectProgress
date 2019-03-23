@@ -22,7 +22,8 @@ def postsign(request):
     except:
         message = "invalid credentials"
         return render(request,"signIn.html",{"messg":message})
-    print(user['idToken'])
+    # user = authe.refresh(user['refreshToken'])
+    print(user)
     session_id = user['idToken']
     request.session['uid'] = str(session_id)
     return render(request,"welcome.html",{"e":email})
@@ -46,7 +47,28 @@ def postsignup(request):
     return render(request,"signIn.html")
 def create(request):
     return render(request,"create.html")
-# def post_create(request):
-#     import time
-#     from datetime import datetime, timezone
-#     import pytz
+def post_create(request):
+    import time
+    from datetime import datetime, timezone
+    import pytz
+    tz = pytz.timezone('Asia/Kolkata')
+    time_now = datetime.now(timezone.utc).astimezone(tz)
+    millis = int(time.mktime(time_now.timetuple()))
+    print("mili"+str(millis))
+    work = request.POST.get('work')
+    progress = request.POST.get('progress')
+    url = request.POST.get('url')
+    idtoken = request.session['uid']
+    a = authe.get_account_info(idtoken)
+    a = a['users']
+    a = a[0]
+    a = a['localId']
+    print("info"+str(a))
+    data = {
+        "work":work,
+        "progress":progress,
+        "url":url
+    }
+    database.child("users").child(a).child("reports").child(millis).set(data)
+    name = database.child("users").child(a).child("details").child("name").get().val()
+    return render(request,"welcome.html",{"e":name})
