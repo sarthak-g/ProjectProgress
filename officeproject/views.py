@@ -22,7 +22,7 @@ def postsign(request):
     except:
         message = "invalid credentials"
         return render(request,"signIn.html",{"messg":message})
-    # user = authe.refresh(user['refreshToken'])
+    user = authe.refresh(user['refreshToken'])
     print(user)
     session_id = user['idToken']
     request.session['uid'] = str(session_id)

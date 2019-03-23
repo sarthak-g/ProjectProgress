@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^postsignup/',views.postsignup,name="postsignup"),
     url(r'^create/',views.create,name="create"),
     url(r'^post_create/',views.post_create,name="post_create"),
+    # url(r'^check/',views.check,name="check"),
 
 
 ]
