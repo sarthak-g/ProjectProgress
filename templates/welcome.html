@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <style>
+      div{
+        position : absolute;
+        right : 10px;
+        top : 5px;
+      }
+  </style>
+
+</head>
+<body>
+
+<div>
+  <button type="button" onclick="location.href='{% url 'log' %}'">LogOut</button>
+</div>
+Welcome {{e}}
+<br><br>
+<button type="button" onclick="location.href='{% url 'create' %}'">Create Report</button>
+<button type="button" onclick="">Check Report</button>
+
+
+</body>
+</html>

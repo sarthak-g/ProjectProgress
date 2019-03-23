@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+<style>
+  div{
+    position : absolute;
+    right:10px;
+    top: 5px;
+  }
+</style>
+
+</head>
+<body>
+
+  <div>
+  <button type="button" onclick="location.href='{% url 'log' %}'">Logout</button>
+  </div>
+  <h2>Create Daily Progress Report</h2>
+  <form action="/post_create/" method="POST">
+    {% csrf_token %}
+    Work Assigned:
+    <input type="text" name="work" required><br><br>
+    Progress:
+    <textarea cols="40" rows="5" name="progress" required></textarea>
+    <br><br>
+    Document Upload:
+    <input type="file" name="files[]" id="files" required>
+    <input type="hidden" name="url" id="url">
+    <button type="button" onclick="uploadimage()">Upload</button><br><br>
+    <input type="submit" value="submit">
+  </form>
+
+</body>
+<script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+
+<script>
+
+  var config = {
+      apiKey: "AIzaSyAXuTUk5ymM_nCiNMTwzMSS0cGxCUfZb10",
+      authDomain: "officeproject-b62fb.firebaseapp.com",
+      databaseURL: "https://officeproject-b62fb.firebaseio.com",
+      projectId: "officeproject-b62fb",
+      storageBucket: "officeproject-b62fb.appspot.com",
+      messagingSenderId: "525969916594",
+    };
+    firebase.initializeApp(config);
+
+    function uploadimage(){
+
+      var file = document.getElementById("files").files[0];
+      var storageRef = firebase.storage().ref();
+
+      var uploadTask = storageRef.child(file.name).put(file);
+
+// Register three observers:
+// 1. 'state_changed' observer, called any time the state changes
+// 2. Error observer, called on failure
+// 3. Completion observer, called on successful completion
+uploadTask.on('state_changed', function(snapshot){
+  // Observe state change events such as progress, pause, and resume
+  // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+  var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  console.log('Upload is ' + progress + '% done');
+  switch (snapshot.state) {
+    case firebase.storage.TaskState.PAUSED: // or 'paused'
+      console.log('Upload is paused');
+      break;
+    case firebase.storage.TaskState.RUNNING: // or 'running'
+      console.log('Upload is running');
+      break;
+  }
+}, function(error) {
+  // Handle unsuccessful uploads
+}, function() {
+  // Handle successful uploads on complete
+  // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+  uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+    console.log('File available at', downloadURL);
+
+    var downloadURL = uploadTask.snapshot.downloadURL;
+    console.log("got url");
+    document.getElementById("url").value = downloadURL;
+    alert("file uploaded successfully");
+
+  });
+
+    }
+
+</script>
+
+</html>
